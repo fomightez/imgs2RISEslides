@@ -1,0 +1,176 @@
+# imgs2RISEslides.ipy
+__author__ = "Wayne Decatur" #fomightez on GitHub
+__license__ = "MIT"
+__version__ = "0.1.0"
+
+
+# imgs2RISEslides.ipy by Wayne Decatur
+# ver 0.1.0
+#
+#*******************************************************************************
+# 
+# PURPOSE: Takes image files and makes slides with pairs of the images on them
+# in a Jupyter-RISE slideshow.
+# 
+import os
+import sys
+from halo import HaloNotebook as Halo
+import fnmatch
+import datetime
+
+
+img_dir = "PUT_IMAGES_HERE"
+
+img_extensions = (".png", ".jpg", ".jpeg",".gif")
+
+
+
+
+
+################################################################################
+#######----------------------HELPER FUNCTIONS-----------------------------######
+
+def write_string_to_file(s, fn):
+    '''
+    Takes a string, `s`, and a name for a file & writes the string to the file.
+    '''
+    with open(fn, 'w') as output_file:
+        output_file.write(s)
+
+def out2_stderr_n_log(s,log_file_text):
+    '''
+    Takes a string as input and sends it to the stderr as well as to a building
+    string that will everntually get saved as a Log file.
+    Also needs the Log file to be sent in because gets assigned within the
+    function in order to add to it. Returns the modified `log_file_text`.
+    '''
+    sys.stderr.write(s)
+    log_file_text += s
+    return log_file_text
+
+
+def make_slideshow_nb(now, nb_stub_file, slideshow_cell_stub_text):
+    '''
+    Takes current datetime, a string that represents the notebook 'stub' (in a 
+    python script form that later is converted to a proper nb by Jupytext), and 
+    the file name of the serialized data and makesa Python script. It then 
+    converts that script to a notebook and runs it using jupytext. The produced 
+    notebook contains every plot displayed for review.
+
+    It returns the name of the notebook produced
+    '''
+    plots4review_fn = f"plots4review_from-ba{now.strftime('%b%d%Y%H%M')}.ipynb"
+    review_nb_stub = review_nb_stub.replace(
+        "PICKLED_SEQS_DFS_N_PLOTS_FILE_PLACEHOLDER",serial_fn)
+    write_string_to_file(review_nb_stub, plots4review_fn[:-6]+".py")
+    !jupytext --to notebook --execute {plots4review_fn[:-6]+".py"}
+    return plots4review_fn
+
+#######------------------END OF HELPER FUNCTIONS--------------------------######
+################################################################################
+
+
+# To
+
+slideshow_cell_stub_text ='''HERE
+''' 
+
+
+
+
+
+
+
+
+
+################################################################################
+#######------------------------MAIN SECTION-------------------------------######
+
+spinner = Halo(text='Processing...', spinner='dots',color = 'magenta')
+spinner.start()
+
+
+# GO THROUGH THE IMAGE DIRECTORY AND COLLECT THE NAMES OF THE IMAGES TO PROCESS:
+#------------------------------------------------------------------------------#
+# This section pre.
+
+log_file_text = out2_stderr_n_log(for_out2both,log_file_text)
+
+for_out2both = "\n#--------*****END OF SUMMARY******---------#"
+log_file_text = out2_stderr_n_log(for_out2both,log_file_text)
+    
+
+
+
+
+
+# FINIS LOG AND ARCHIVE THE NOTEBOOK ALONG WITH THE IMAGES:
+#------------------------------------------------------------------------------#
+# Make archive with `.zip` so easier for non-Unix people to handle
+
+now = datetime.datetime.now()
+
+
+
+#Serialize the data in `seqs_dfs_and_plots_per_sample_set`
+# use of `with` based on https://stackoverflow.com/a/20101064/8508004
+import pickle 
+serial_fn = "seqs_dfs_and_plots_for_each_set.pkl"
+with open(serial_fn, "wb") as f:
+    pickle.dump(seqs_dfs_and_plots_per_sample_set, f)
+files_produced.append(serial_fn)
+for_out2both = ("\n\nIn addition to individal tabular data and plot images, "
+    "records of\nwhat was procesed and results have\nbeen serialized for later "
+    f"use as `{serial_fn}`.")
+log_file_text = out2_stderr_n_log(for_out2both,log_file_text)
+
+
+# Store slidwhose nb as part of the archive.
+plots4review_fn = make_and_run_review_nb(now,review_nb_stub, serial_fn)
+files_produced.append(plots4review_fn)
+# next line removes the `.py` intermediate made in process to make 
+# 'review' nb
+!rm {plots4review_fn[:-6]+".py"}
+for_out2both = ("\nA Jupyter notebook listing the resulting plots for "
+    f"convenient reviewing\nhas been saved as `{plots4review_fn}`.")
+log_file_text = out2_stderr_n_log(for_out2both,log_file_text)
+
+
+log_file_text += (f"\n\n#### THIS CONCLUDES THE SLIDESHOW MAKING.  "
+    f"{now.strftime('%b%d%Y%H%M')}#######")
+log_file_name = f"LOG_ba{now.strftime('%b%d%Y%H%M')}.txt"
+write_string_to_file(log_file_text, log_file_name )
+sys.stderr.write(f"\n\nLog file from the run has been saved as "
+    f"`{log_file_name}`.")
+files_produced.append(log_file_name)
+
+# Make the archive from the run
+archive_file_name = f"slideshow_of_images{now.strftime('%b%d%Y%H%M')}.gzip"
+#print(files_produced) # FOR DEBUGGING ONLY
+!gunzip {archive_file_name} {" ".join(files_produced)}
+sys.stderr.write("\n*****************DONE***********************************\n"
+    "{} generated. Download it.\n"
+    "*****************DONE***********************************".format(
+    archive_file_name))
+
+
+# CLEAN UP SO DIRECTORY NOT SO CLUTTERED SO MORE OBVIOUS WHAT TO DOWNLOAD:
+#------------------------------------------------------------------------------#  
+# Delete the files that have been archived (except leave the demo sequence file 
+# so that development example can be run again easily)
+if cleaning_step:
+    sys.stderr.write("\nCleaning up...be patient...\n")
+    spinner = Halo(text='Cleaning up...', spinner='dots',color = 'magenta')
+    spinner.start()  
+    if demo_file_name in files_produced:
+        files_produced.remove(demo_file_name)
+    for ef in files_produced:
+        !rm {ef}
+    # Delete the `temp` files from the making of the dataframes step; they were used 
+    # for the checking of the two sets of data bendIt reports.
+    !rm results_parsing_temp*.tsv
+
+    spinner.stop()
+    sys.stderr.write("\nCleaning complete.")
+#######------------------END OF MAIN SECTION------------------------------######
+################################################################################

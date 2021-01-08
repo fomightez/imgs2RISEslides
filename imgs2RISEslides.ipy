@@ -12,6 +12,12 @@ __version__ = "0.1.0"
 # PURPOSE: Takes image files and makes slides with pairs of the images on them
 # in a Jupyter-RISE slideshow.
 # 
+# Note to self: It looks like I was taking as a backbone for this effort 
+# the code to make notebooks with plot images based on code in 
+# https://github.com/fomightez/bendit-binder to make
+# notebook cells with images side-by-side for automating making RISE 
+# presentations with several images in a folder.
+
 import os
 import sys
 from halo import HaloNotebook as Halo
@@ -40,7 +46,7 @@ def write_string_to_file(s, fn):
 def out2_stderr_n_log(s,log_file_text):
     '''
     Takes a string as input and sends it to the stderr as well as to a building
-    string that will everntually get saved as a Log file.
+    string that will eventually get saved as a Log file.
     Also needs the Log file to be sent in because gets assigned within the
     function in order to add to it. Returns the modified `log_file_text`.
     '''
@@ -53,7 +59,7 @@ def make_slideshow_nb(now, nb_stub_file, slideshow_cell_stub_text):
     '''
     Takes current datetime, a string that represents the notebook 'stub' (in a 
     python script form that later is converted to a proper nb by Jupytext), and 
-    the file name of the serialized data and makesa Python script. It then 
+    the file name of the serialized data and makes a Python script. It then 
     converts that script to a notebook and runs it using jupytext. The produced 
     notebook contains every plot displayed for review.
 
@@ -104,7 +110,7 @@ log_file_text = out2_stderr_n_log(for_out2both,log_file_text)
 
 
 
-# FINIS LOG AND ARCHIVE THE NOTEBOOK ALONG WITH THE IMAGES:
+# FINISH LOG AND ARCHIVE THE NOTEBOOK ALONG WITH THE IMAGES:
 #------------------------------------------------------------------------------#
 # Make archive with `.zip` so easier for non-Unix people to handle
 
@@ -125,7 +131,7 @@ for_out2both = ("\n\nIn addition to individal tabular data and plot images, "
 log_file_text = out2_stderr_n_log(for_out2both,log_file_text)
 
 
-# Store slidwhose nb as part of the archive.
+# Store slideshow nb as part of the archive.
 plots4review_fn = make_and_run_review_nb(now,review_nb_stub, serial_fn)
 files_produced.append(plots4review_fn)
 # next line removes the `.py` intermediate made in process to make 

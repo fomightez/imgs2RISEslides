@@ -15,7 +15,11 @@ This repository simply makes it easier for you to convert several image files in
 Related
 -------
 
+This [blog post by Mark Roepke](https://www.markroepke.me/posts/2019/06/05/tips-for-slideshows-in-jupyter.html) highlights and clearly illustrates the use of an extension that can allow cells to be side by side in a single row in a notebook and notes that, "When the notebook is then put into [RISE] presentation mode, the cells with stay in their columns giving two-column content on slides."
+
 I have a repository that launches Binder sessions with Jupyter-RISE served via Binder with hide_code extension working [here](https://github.com/fomightez/jupyter-rise_with-hide_code). It allows toggling off of the code or output and it is respected in the notebook and corresponding slideshow.
+
+
 
 Impetus
 -------

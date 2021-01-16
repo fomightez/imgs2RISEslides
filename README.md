@@ -4,6 +4,9 @@
 
 Takes images and makes individual RISE slides from pairs of the images.
 
+Click any `launch binder` badge on this page to get started.
+
+
 -------------------------------
 
 [RISE](https://github.com/damianavila/RISE/) allows you to instantly turn your Jupyter Notebooks into a slideshow. No out-of-band conversion is needed, switch from jupyter notebook to a live reveal.js-based slideshow in a single keystroke, and back.

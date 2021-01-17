@@ -23,6 +23,9 @@ import sys
 from halo import HaloNotebook as Halo
 import fnmatch
 import datetime
+import random
+from PIL import Image, ImageDraw, ImageFont
+from sh import curl
 
 
 img_dir = "PUT_IMAGES_HERE"
@@ -53,6 +56,43 @@ def out2_stderr_n_log(s,log_file_text):
     sys.stderr.write(s)
     log_file_text += s
     return log_file_text
+
+def make_placeholder_images(img_dir):
+    '''
+    Takes a directory and saves image files to it to be used as placeholders in
+    demonstration
+    '''
+    number_of_placeholder_images_to_generate = 6
+    color_list = (["orange", "pink", "red", "blue","cyan",
+        "cornflowerblue","violet","crimson","wheat"])
+    color_list += (["#eb5803", "#e31d6c", "#c90e0e", "#0f0fdb","#16daf0",
+        "#3465e0","#c10ec7","#3d0606","9e8659","#00ff00"])
+    for i in range(1,number_of_placeholder_images_to_generate+1):
+        # make a blank image for the text, initialized to transparent text color
+        img = Image.new('RGB', (350,350), color=random.choice(color_list))
+
+        # get a font
+        #fnt = ImageFont.truetype('/usr/share/fonts/truetype/freefont/FreeMono.ttf', 40)
+        # got around specifying font and not knowing where it would be in the linux system 
+        # by not doing that. (based on https://notebooks.ai/santiagobasulto/how-to-generate-images-with-text-using-python-and-pil-bcd5d188)
+        # get a drawing context
+
+        d = ImageDraw.Draw(img)
+
+        # draw text, full opacity
+        d.text((10,60), f"This is image {i}", fill=(255,255,255))
+        img.save(f'image_{i}.png')
+    color_list = (["eb5803", "e31d6c", "c90e0e", "0f0fdb","16daf0","3465e0","c10ec7",
+    "3d0606","9e8659","00ff00","609413","d66969","1d9e57","552475"])
+    for i in range(1,number_of_placeholder_images_to_generate+1):
+        '''
+        Using [Dynamic Dummy Image Generator](https://dummyimage.com/) and curl
+        '''
+        fn = 'ddimage_{}.png'.format(i)
+        string_in_img = 'Image {}'.format(i)
+        color=random.choice(color_list)
+        curl("-L","-o","{}/{}".format(img_dir,fn),
+            "https://dummyimage.com/350/{}/fff&text={}".format(color,string_in_img))
 
 
 def make_slideshow_nb(now, nb_stub_file, slideshow_cell_stub_text):
@@ -98,8 +138,11 @@ spinner.start()
 
 # GO THROUGH THE IMAGE DIRECTORY AND COLLECT THE NAMES OF THE IMAGES TO PROCESS:
 #------------------------------------------------------------------------------#
-# This section pre.
-
+# If the Image directory is empty, first make some images there
+dir = os.listdir(img_dir) 
+if len(dir) == 0: 
+    make_placeholder_images(img_dir)
+# Make a list of files ending in `.png, `.jpg` or variations of `.jpg`
 log_file_text = out2_stderr_n_log(for_out2both,log_file_text)
 
 for_out2both = "\n#--------*****END OF SUMMARY******---------#"

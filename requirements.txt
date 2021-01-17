@@ -9,3 +9,4 @@ halo
 jupytext
 jupyter-archive
 pillow
+sh

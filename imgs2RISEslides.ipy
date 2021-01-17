@@ -61,6 +61,9 @@ def make_placeholder_images(img_dir):
     '''
     Takes a directory and saves image files to it to be used as placeholders in
     demonstration
+
+    Makes an odd number of images because best script can handle when last slide
+    cannot have two images.
     '''
     number_of_placeholder_images_to_generate = 6
     color_list = (["orange", "pink", "red", "blue","cyan",
@@ -80,10 +83,12 @@ def make_placeholder_images(img_dir):
         d = ImageDraw.Draw(img)
 
         # draw text, full opacity
-        d.text((10,60), f"This is image {i}", fill=(255,255,255))
-        img.save(f'image_{i}.png')
+        d.text((10,60), "This is image {}".format(i), fill=(255,255,255))
+        img.save('{}/image_{}.png'.format(img_dir,i))
     color_list = (["eb5803", "e31d6c", "c90e0e", "0f0fdb","16daf0","3465e0","c10ec7",
     "3d0606","9e8659","00ff00","609413","d66969","1d9e57","552475"])
+    number_of_placeholder_images_to_generate = 7 # want odd so can make sure the 
+    # script is handle odd numbers of images
     for i in range(1,number_of_placeholder_images_to_generate+1):
         '''
         Using [Dynamic Dummy Image Generator](https://dummyimage.com/) and curl
@@ -139,11 +144,28 @@ spinner.start()
 # GO THROUGH THE IMAGE DIRECTORY AND COLLECT THE NAMES OF THE IMAGES TO PROCESS:
 #------------------------------------------------------------------------------#
 # If the Image directory is empty, first make some images there
-dir = os.listdir(img_dir) 
-if len(dir) == 0: 
+dir_contents = [f for f in os.listdir(img_dir) if not f.startswith('.')] # based
+# on https://stackoverflow.com/a/26554941/8508004
+if len(dir_contents) == 0:
+    for_out2both = "Making demonstation images..."
+    # note that it makes an odd number of images for the demonstation so that
+    # sure it can handle making last slide when there may not be two images 
+    # to put on that slide after all others already placed
+    log_file_text = out2_stderr_n_log(for_out2both,log_file_text)
     make_placeholder_images(img_dir)
+
 # Make a list of files ending in `.png, `.jpg` or variations of `.jpg`
+dir_contents = [f for f in os.listdir(img_dir) if not f.startswith('.')]
+img_files = []
+for fn in dir_contents:
+    if fn.lower().endswith(('.jpg', '.jpeg', '.gif', '.png')):
+        img_files.append(img_dir+"/"+fn)
+for_out2both = "Made list of image files..."
 log_file_text = out2_stderr_n_log(for_out2both,log_file_text)
+
+
+
+
 
 for_out2both = "\n#--------*****END OF SUMMARY******---------#"
 log_file_text = out2_stderr_n_log(for_out2both,log_file_text)

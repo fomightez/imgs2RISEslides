@@ -5,6 +5,7 @@ rm requirements.txt
 rm postBuild
 rm apt.txt
 rm README.md
+rm RISEnb_stub.ipynb
 
 
 

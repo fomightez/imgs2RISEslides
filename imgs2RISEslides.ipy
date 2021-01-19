@@ -9,8 +9,8 @@ __version__ = "0.1.0"
 #
 #*******************************************************************************
 # 
-# PURPOSE: Takes image files and makes slides with pairs of the images on them
-# in a Jupyter-RISE slideshow.
+# PURPOSE: Takes a collection of image files in a folder and makes slides with 
+# pairs of the images on them in a Jupyter-RISE slideshow.
 # 
 # Note to self: It looks like I was taking as a backbone for this effort 
 # the code to make notebooks with plot images based on code in 

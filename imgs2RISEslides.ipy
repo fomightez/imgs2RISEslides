@@ -99,7 +99,17 @@ def make_placeholder_images(img_dir):
         curl("-L","-o","{}/{}".format(img_dir,fn),
             "https://dummyimage.com/350/{}/fff&text={}".format(color,string_in_img))
 
+def chunks(a_list, n):
+    """Yield successive n-sized chunks from list."""
+    '''
+    Split a list into chunks with also collecting any remainder group
+    from https://stackoverflow.com/a/312464/8508004 , see
+    https://gist.github.com/fomightez/ef7583919dde51f3569731ca1c5247ba
+    '''
+    for i in range(0, len(a_list), n):
+        yield a_list[i:i+n]
 
+''' DON'T USE. EASIER WITH JUST NBFORMAT!!!
 def make_slideshow_nb(now, nb_stub_file, slideshow_cell_stub_text):
     '''
     Takes current datetime, a string that represents the notebook 'stub' (in a 
@@ -116,6 +126,7 @@ def make_slideshow_nb(now, nb_stub_file, slideshow_cell_stub_text):
     write_string_to_file(review_nb_stub, plots4review_fn[:-6]+".py")
     !jupytext --to notebook --execute {plots4review_fn[:-6]+".py"}
     return plots4review_fn
+'''
 
 #######------------------END OF HELPER FUNCTIONS--------------------------######
 ################################################################################
@@ -162,6 +173,25 @@ for fn in dir_contents:
         img_files.append(img_dir+"/"+fn)
 for_out2both = "Made list of image files..."
 log_file_text = out2_stderr_n_log(for_out2both,log_file_text)
+
+
+# Chunk list of image file names for use in making slides:
+#------------------------------------------------------------------------------#
+image_fn_pairs = list(chunks(img_files,2))
+image_fn_pairs
+
+
+# PLACE IMAGES ON SLIDES (OR WHAT WILL BECOME SLIDES):
+#------------------------------------------------------------------------------#
+# Needs to be able to handle an odd number of slides as well as even
+# Can I do this using nbformat to take markdown and make slides? How would I add
+# the meta data for slideshow if I did? During or after?
+# I don't think using jupytext to convert markdown allows adding meta-tags or 
+# does it? If not, then maybe nbformat easier since will be after-the-fact?
+JSUT USE NBFORMAT!!!, see `dissecting a RISE slideshow notebook with nbformat.ipynb`
+
+
+
 
 
 

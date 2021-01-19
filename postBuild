@@ -2,7 +2,7 @@
 
 
 # make a folder for uploading the images to later
-mkdir PUT_IMAGES_HERE
+mkdir SLIDESHOW_IMGS
 
 # Add in ipywidgets extension so Halo works in notebook
 # Adding and enabling ipywidgets based on https://github.com/binder-examples/jupyter-extension/commit/63bd1a323a4bacead2afbfb3522f8053ffc39250

@@ -26,9 +26,13 @@ import datetime
 import random
 from PIL import Image, ImageDraw, ImageFont
 from sh import curl
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO
 
 
-img_dir = "PUT_IMAGES_HERE"
+img_dir = "SLIDESHOW_IMGS"
 
 img_extensions = (".png", ".jpg", ".jpeg",".gif")
 
